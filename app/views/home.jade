@@ -7,52 +7,52 @@ block content
     br
     a(href="/logout") Logout
 
-    |<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-
-    h1 Demo API
-    hr
-    textarea.add-two
-    br
-    button.add-two Add Two
-    hr
-    |Add two answer:&nbsp;
-    span.add-two-answer
-    hr
-    textarea.reverse-str
-    br
-    button.reverse-str Reverse String
-    hr
-    |Reverse string answer:&nbsp;
-    span.reverse-str-answer
-    hr
-
-    script(type='text/javascript').
-      'use strict';
-      $('button.add-two').on('click', function(){
-        var startingNum = $('textarea.add-two').val();
-        $.ajax({
-          url: "/add",
-          method: "get",
-          data: { foo: startingNum },
-          success: function(response){
-            $('.add-two-answer').text(response);
-          }
-        });
-      });
-
-      $('button.reverse-str').on('click', function(){
-        var startingStr = $('textarea.reverse-str').val();
-        $.ajax({
-          url: "/reverse",
-          method: "get",
-          data: { foo: startingStr },
-          success: function(response){
-            $('.reverse-str-answer').text(response);
-          }
-        });
-      });
-
   else
     h1 Welcome
     br
     a(href="/login") Login
+
+  |<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+  h1 Demo API
+  hr
+  textarea.add-two
+  br
+  button.add-two Add Two
+  hr
+  |Add two answer:&nbsp;
+  span.add-two-answer
+  hr
+  textarea.reverse-str
+  br
+  button.reverse-str Reverse String
+  hr
+  |Reverse string answer:&nbsp;
+  span.reverse-str-answer
+  hr
+
+  script(type='text/javascript').
+    'use strict';
+    $('button.add-two').on('click', function(){
+      var startingNum = $('textarea.add-two').val();
+      $.ajax({
+        url: "/add",
+        method: "get",
+        data: { foo: startingNum },
+        success: function(response){
+          $('.add-two-answer').text(response);
+        }
+      });
+    });
+
+    $('button.reverse-str').on('click', function(){
+      var startingStr = $('textarea.reverse-str').val();
+      $.ajax({
+        url: "/reverse",
+        method: "get",
+        data: { foo: startingStr },
+        success: function(response){
+          $('.reverse-str-answer').text(response);
+        }
+      });
+    });

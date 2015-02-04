@@ -30,11 +30,11 @@ app.use('/reverse', prox('http://127.0.0.1:4002'));
 
 function prox (url) {
   return function (req, res) {
-    // if (req.isAuthenticated()){
+    if (req.isAuthenticated()){
       return proxy.web(req, res, { target: url });
-    // } else {
-    //   res.send('Please <a href="/login">log in</a>.');
-    // }
+    } else {
+      res.send('Please log in.');
+    }
   }
 }
 
@@ -59,7 +59,7 @@ add.use('/', function (req, res) {
   res.send(req.query.foo + 'two');
 });
 
-add.listen(4003, function () {
+add.listen(4003, 'localhost', function () {
   console.log('Add API server listening on port 4003');
 });
 
@@ -72,6 +72,6 @@ reverse.use('/', function (req, res) {
   res.send(req.query.foo && req.query.foo.split('').reverse().join(''));
 });
 
-reverse.listen(4002, function () {
+reverse.listen(4002, 'localhost', function () {
   console.log('Add API server listening on port 4002');
 });
