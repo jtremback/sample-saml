@@ -55,8 +55,8 @@ var add = express();
 add.use(express.bodyParser());
 
 add.use('/', function (req, res) {
-  console.log('Add')
-  res.send(req.body + 'two');
+  console.log(req.originalUrl)
+  res.send(req.query.foo + 'two');
 });
 
 add.listen(4003, function () {
@@ -69,8 +69,7 @@ var reverse = express();
 reverse.use(express.bodyParser());
 
 reverse.use('/', function (req, res) {
-  console.log('Reverse', req.body)
-  res.send(req.body.reverse());
+  res.send(req.query.foo && req.query.foo.split('').reverse().join(''));
 });
 
 reverse.listen(4002, function () {
