@@ -13,7 +13,6 @@ module.exports = function (passport, config) {
 	passport.use(new SamlStrategy(
 	  {
 	    path: config.passport.saml.path,
-	    // protocol: 'https://',
 	    entryPoint: config.passport.saml.entryPoint,
 	    issuer: config.passport.saml.issuer
 	  },

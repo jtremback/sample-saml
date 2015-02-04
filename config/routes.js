@@ -29,10 +29,6 @@ module.exports = function(app, config, passport) {
 		}
 	);
 
-	app.get('/signup', function (req, res) {
-		res.render('signup');
-	});
-
 	app.get('/profile', function(req, res) {
     	if (req.isAuthenticated()){
 				res.render('profile', {
