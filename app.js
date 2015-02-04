@@ -1,67 +1,53 @@
-var express = require('express'),
-  http = require('http'),
-  path = require('path'),
-  passport = require("passport");
+var express = require('express');
+var path = require('path');
+var passport = require('passport');
+var selfSignedHttps = require('self-signed-https');
 
-var env = process.env.NODE_ENV || 'development',
-  config = require('./config/config')[env];
+// Create a proxy server with custom application logic
+var httpProxy = require('http-proxy');
+var proxy = httpProxy.createProxyServer({});
+
+var env = process.env.NODE_ENV || 'development';
+var config = require('./config/config')[env];
 
 require('./config/passport')(passport, config);
 
 
 var app = express();
 
-app.configure(function () {
-  app.set('port', config.app.port);
-  app.set('views', __dirname + '/app/views');
-  app.set('view engine', 'jade');
-  app.use(express.logger('dev'));
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
-  app.use(express.session(
-    {
-      secret: 'this shit hits'
-    }));
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(path.join(__dirname, 'public')));
-});
+app.set('views', __dirname + '/app/views');
+app.set('view engine', 'jade');
 
-app.configure('development', function () {
-  console.log ("Development mode.");
-  app.use(express.errorHandler());
-});
-app.configure ('production', function () {
-  console.log ("Production mode.");
-});
+app.use(express.cookieParser());
+app.use(express.bodyParser());
+app.use(express.session({ secret: 'butterbean' }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('500', { error: err }); 
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(function(req, res, next){
-  res.status(404);
-  if (req.accepts('html')) {
-    res.render('404',
-      {
-        url : req.url
-      });
-    return;
+// app.use(function (req, res, next) {
+//   console.log(
+//     // Object.keys(req),
+//     req.url)
+//   next()
+// });
+
+app.use('/proxy', function (req, res) {
+  if (req.isAuthenticated()){
+    proxy.web(req, res, { target: 'http://amazon.com' });
+  } else {
+    res.redirect('/login');
   }
-  if (req.accepts('json')) {
-    res.send({ error: 'Not found' });
-    return;
-  }
-  res.type('txt').send('Not found');
 });
-
 
 require('./config/routes')(app, config, passport);
 
-
-http.createServer(app).listen(app.get('port'), function () {
-    console.log("Express server listening on port " + app.get('port'));
+selfSignedHttps(
+  app
+)
+.listen(config.app.port, function () {
+  console.log('Express server listening on port ' + config.app.port);
 });
+
+
